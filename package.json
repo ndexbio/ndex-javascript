@@ -1,0 +1,24 @@
+{
+  "name": "ndex",
+  "version": "0.0.1",
+  "description": "NDEx API client, NiceCX network data model, common utilities",
+  "main": "ndex_client.js",
+  "scripts": {
+    "test": "test_ndex"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ndexbio/ndex-javascript.git"
+  },
+  "keywords": [
+    "client",
+    "ndex",
+    "nicecx"
+  ],
+  "author": "NDEx Team",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/ndexbio/ndex-javascript/issues"
+  },
+  "homepage": "https://github.com/ndexbio/ndex-javascript#readme"
+}
