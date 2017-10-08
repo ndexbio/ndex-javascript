@@ -663,7 +663,7 @@
 
     if (typeof(window.ndexClient) === 'undefined') {
         window.ndexClient = makeNdexClient();
-        window.makeNdexClient =
+        window.makeNdexClient = makeNdexClient
     }
 
 })(window); // execute this closure on the global window
