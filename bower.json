@@ -1,0 +1,26 @@
+{
+  "name": "ndex",
+  "description": "NDEx API client, NiceCX network data model, common utilities",
+  "main": "ndex_client.js",
+  "authors": [
+    "NDEx Team"
+  ],
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "client",
+    "ndex",
+    "nicecx"
+  ],
+  "homepage": "https://github.com/ndexbio/ndex-javascript",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.2.1"
+  }
+}

@@ -140,44 +140,187 @@
                 }
                 aspectElements[nodeId] = element;
             };
- /*
 
-            }
-                addAssociatatedAspectElement(_niceCXObject.nodeAssociatedAspects, nodeId, elmt)
 
-            var addAssociatatedAspectElement = function(table, id, element){
-                aspectElements =
 
-                    table.get(elmt.getAspectName())
-                if (aspectElements is None){
-                    aspectElements = {}
-                    table.put(elmt.
-                    getAspectName(), aspectElements)
+            /*---------------------------------------------------------------------*
+             * Get elements
+             *---------------------------------------------------------------------*/
 
-                    elmts = aspectElements.
-                    get(id)
+            _niceCXObject.getNodes = function () {
+                return _niceCXObject['nodes'];
+            };
 
-                    if ((elmts is None{
+            _niceCXObject.getNodeAttributes = function () {
+                return _niceCXObject['nodeAttributes'];
+            };
 
-                        elmts = []
-                        aspectElements.put(id,
+            _niceCXObject.getEdges = function () {
+                return _niceCXObject[niceCX.edges];
+            };
 
-                            elmts)
-                        elmts.append(elmt)
-*/
+            _niceCXObject.getEdgeAttributes = function () {
+                return _niceCXObject['edgeAttributes'];
+            };
+            /*
+             _niceCXObject.getOpaqueAspectTable(self{
+             return _niceCXObject.opaqueAspects
+
+             _niceCXObject.getNetworkAttributes(self{
+             return _niceCXObject.networkAttributes
+
+             _niceCXObject.getNodeAttributes(self{
+             return _niceCXObject.nodeAttributes
+
+             _niceCXObject.getEdgeAttributes(self{
+             return _niceCXObject.edgeAttributes
+
+             _niceCXObject.getNodeAssociatedAspects(self{
+             return _niceCXObject.nodeAssociatedAspects
+
+             _niceCXObject.getEdgeAssociatedAspects(self{
+             return _niceCXObject.edgeAssociatedAspects
+
+             _niceCXObject.getNodeAssociatedAspect = function(aspectName{
+             return _niceCXObject.nodeAssociatedAspects.get(aspectName)
+
+             _niceCXObject.getEdgeAssociatedAspect = function(aspectName{
+             return _niceCXObject.edgeAssociatedAspects.get(aspectName)
+
+             _niceCXObject.getProvenance(self{
+             return _niceCXObject.provenance
+
+             _niceCXObject.setProvenance = function(provenance{
+             _niceCXObject.provenance = provenance
+
+             */
+            /*
+             _niceCXObject.getMetadata(self{
+             return _niceCXObject.
+
+             metadata
+
+             _niceCXObject.
+             setMetadata = function(
+
+             metadata{
+             _niceCXObject.metadata = metadata
+
+             _niceCXObject.addNameSpace =
+
+             function(prefix, uri{
+             _niceCXObject.namespaces[
+             prefix] = uri
+
+
+
+             _niceCXObject.setNamespaces(self,ns {
+             _niceCXObject.namespaces = ns;
+
+             _niceCXObject.getNamespaces = function(){
+             return _niceCXObject.namespaces;
+             }
+
+
+
+             };
+             */
+
+
             return _niceCXObject;
         };
 
-        _niceCXFactory.makeNiceCXFromCXStream = function (CXStream) {
+        _niceCXFactory.makeNiceCXFromCX = function (CX) {
+
             var _niceCXObject = _niceCXFactory.makeNiceCX();
+            for (var i = 0; i < CX.length; i++) {
+                var fragment = CX[i];
+                if (fragment) {
+                    // iterate over the keys in the fragment object
+                    for (var aspectName in fragment) {
+                        if (fragment.hasOwnProperty(aspectName)) {
+                            var elements = fragment[aspectName];
 
-            console.log(CXStream);
+                            if (aspectName === 'numberVerification') {
+                                continue;
 
+                            } else if (aspectName === 'status') {
+                                continue;
+
+                            } else if (aspectName === 'metaData') {
+                                if (!_niceCXObject.metaData) {
+                                    _niceCXObject.metaData = [];
+                                }
+                                _niceCXObject.metaData = _niceCXObject.metaData.concat(elements);
+                                continue;
+                            }
+
+                            for (var j = 0; j < elements.length; j++) {
+                                var element = elements[j];
+                                handleCxElement(aspectName, element, niceCX);
+                            }
+                        }
+                    }
+                }
+            }
             return _niceCXObject;
-
         };
+
+        var handleCxElement = function (aspectName, element, niceCX) {
+
+            switch (aspectName) {
+                case 'nodes':
+                    _niceCXObject.addNode(element);
+                    break;
+                case 'edges':
+                    _niceCXObject.addEdge(element);
+                    break;
+                case 'citations':
+                    _niceCXObject.addCitation(element);
+                    break;
+                case 'supports':
+                    _niceCXObject.addSupport(element);
+                    break;
+                case 'nodeAttributes':
+                    _niceCXObject.addNodeAttribute(element);
+                    break;
+                case 'edgeAttributes':
+                    _niceCXObject.addEdgeAttribute(element);
+                    break;
+                case 'edgeCitations':
+                    _niceCXObject.addEdgeCitations(element);
+                    break;
+                case 'nodeCitations':
+                    _niceCXObject.addNodeCitations(element);
+                    break;
+                case 'edgeSupports':
+                    _niceCXObject.addSupport(element);
+                    break;
+                    /*
+                case 'nodeSupports':
+                    addRelationToRelationAspect(aspect,element,'supports');
+                    break;
+                case 'functionTerms':
+                    aspect[element['po']] = element;
+                    break;
+                    */
+                case 'cartesianCoordinates':
+                    _niceCXObject.addNodeAssociatedAspectElement(aspectName, element);
+
+                default:
+                    _niceCXObject.addOpaqueAspectElement(aspectName, element);
+
+                    if (!aspect.elements) {
+                        aspect.elements = [];
+                    }
+
+                    aspect.elements.push(element);
+            }
+        };
+
+
         /*---------------------------------------------------------------------*
-         * ****  Finally, return the client object  ****
+         * ****  Finally, return the factory object  ****
          *---------------------------------------------------------------------*/
         return _niceCXFactory;
     }
@@ -188,109 +331,14 @@
      * in which case we throw an error
      *---------------------------------------------------------------------*/
 
-    if (typeof(window.ndexClient) === 'undefined') {
+    if (typeof(window.niceCXFactory) === 'undefined') {
         window.niceCXFactory = makeNiceCXFactory();
     }
 
 })(window); // execute this closure on the global window
 
-/*
 
 
-
-
- _niceCXObject.addEdgeAssociatedAspectElement = function(edgeId, elmt{
- _niceCXObject.
-
- addAssciatatedAspectElement(_niceCXObject.edgeAssociatedAspects, edgeId, elmt)
-
- _niceCXObject.addAssciatatedAspectElement = function(table, id, elmt{
- aspectElements =
-
- table.get(elmt.getAspectName())
- if (aspectElements is None){
- aspectElements = {}
- table.put(elmt.
- getAspectName(), aspectElements)
-
- elmts = aspectElements.
- get(id)
-
- if ((elmts is None{
-
- elmts = []
- aspectElements.put(id,
-
- elmts)
- elmts.append(elmt)
-
- */
-
-/*
- _niceCXObject.getMetadata(self{
- return _niceCXObject.
-
- metadata
-
- _niceCXObject.
- setMetadata = function(
-
- metadata{
- _niceCXObject.metadata = metadata
-
- _niceCXObject.addNameSpace =
-
- function(prefix, uri{
- _niceCXObject.namespaces[
- prefix] = uri
-
- _niceCXObject.
-
- setNamespaces(self,ns {
- _niceCXObject.namespaces = ns
-
- _niceCXObject.getNamespaces(self,{
- return _niceCXObject.namespaces
-
- _niceCXObject.getEdges (self{
- return _niceCXObject.edges
-
- _niceCXObject.getNodes(self{
- return _niceCXObject.nodes
-
- _niceCXObject.getOpaqueAspectTable(self{
- return _niceCXObject.opaqueAspects
-
- _niceCXObject.getNetworkAttributes(self{
- return _niceCXObject.networkAttributes
-
- _niceCXObject.getNodeAttributes(self{
- return _niceCXObject.nodeAttributes
-
- _niceCXObject.getEdgeAttributes(self{
- return _niceCXObject.edgeAttributes
-
- _niceCXObject.getNodeAssociatedAspects(self{
- return _niceCXObject.nodeAssociatedAspects
-
- _niceCXObject.getEdgeAssociatedAspects(self{
- return _niceCXObject.edgeAssociatedAspects
-
- _niceCXObject.getNodeAssociatedAspect = function(aspectName{
- return _niceCXObject.nodeAssociatedAspects.get(aspectName)
-
- _niceCXObject.getEdgeAssociatedAspect = function(aspectName{
- return _niceCXObject.edgeAssociatedAspects.get(aspectName)
-
- _niceCXObject.getProvenance(self{
- return _niceCXObject.provenance
-
- _niceCXObject.setProvenance = function(provenance{
- _niceCXObject.provenance = provenance
-
-
- };
- */
 
 
 
@@ -488,50 +536,6 @@
 
 
 
- var handleCxElement = function (aspectName, element, niceCX) {
-
- var aspect = niceCX[aspectName];
-
- if ((!aspect) {
- aspect = {};
-
- niceCX[aspectName] = aspect;
- }
-
- switch (aspectName) {
- case 'nodes':
- case 'edges':
- case 'citations':
- case 'supports':
- aspect[element['@id']] = element;
- break;
- case 'nodeAttributes':
- addElementToAspectValueMap(aspect, element);
- break;
- case 'edgeAttributes':
- addElementToAspectValueMap(aspect, element);
- break;
- case 'edgeCitations':
- case 'nodeCitations':
- addRelationToRelationAspect(aspect,element, 'citations');
- break;
- case 'edgeSupports':
- case 'nodeSupports':
- addRelationToRelationAspect(aspect,element,'supports');
- break;
- case 'functionTerms':
- aspect[element['po']] = element;
- break;
- default:
- // opaque for now
-
- if ((!aspect.elements) {
- aspect.elements = [];
- }
-
- aspect.elements.push(element);
- }
- };
 
  */
 /** utility functions for nice cx */

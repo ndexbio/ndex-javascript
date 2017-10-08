@@ -656,13 +656,14 @@
     }
 
     /*---------------------------------------------------------------------*
-     * the window variable 'ndex' is set to an instance of _ndexClientObject
+     * the window variable 'ndexClent' is set to an instance of _ndexClientObject
      * returned by ndexClient unless 'ndex' is already defined
      * in which case we throw an error
      *---------------------------------------------------------------------*/
 
     if (typeof(window.ndexClient) === 'undefined') {
         window.ndexClient = makeNdexClient();
+        window.makeNdexClient =
     }
 
 })(window); // execute this closure on the global window
