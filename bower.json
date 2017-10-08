@@ -12,7 +12,7 @@
     "nicecx"
   ],
   "homepage": "https://github.com/ndexbio/ndex-javascript",
-  "private": true,
+  "private": false,
   "ignore": [
     "**/.*",
     "node_modules",
